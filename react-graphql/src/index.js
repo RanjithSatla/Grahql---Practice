@@ -7,7 +7,7 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
 const client = new ApolloClient({
   uri: "https://rickandmortyapi.com/graphql",
-  cache: InMemoryCache(),
+  cache: new InMemoryCache(), //Once queried it will the data from the cache if queried more than once.
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
