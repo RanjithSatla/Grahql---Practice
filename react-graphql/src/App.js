@@ -1,11 +1,18 @@
-import logo from "./logo.svg";
+// import logo from "./logo.svg";
 import "./App.css";
-import CharactersList from "./pages/CharactersList";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import CharacterList from "./pages/CharactersList";
+import Character from "./pages/Character";
 
 function App() {
   return (
     <div className="App">
-      <CharactersList></CharactersList>
+      <BrowserRouter>
+        <Routes>
+          <Route strict exact path="/" element={<CharacterList />} />
+          <Route strict exact path="/:id" element={<Character />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
