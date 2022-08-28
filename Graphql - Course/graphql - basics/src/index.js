@@ -4,34 +4,51 @@ import { GraphQLServer } from "graphql-yoga";
 
 // Scalar types : String, Int, Float, Boolean, ID
 
+//Creating Custom types :
+
 const typeDefs = `
 type Query {
-   title : String!
-   price : Float!
-   releaseYear : Int
-   rating : Float
-   inStock : Boolean!
+  me : User!
+  post : Post!
 }
+
+
+type User {
+  id : ID!
+  name : String!
+  email : String!
+  age : Int
+}
+
+type Post {
+  id: ID!
+  title : String!
+  body : String! 
+  published : Int!
+
+}
+
 `;
 
 // Resolvers :
 
 const resolvers = {
   Query: {
-    title() {
-      return "ipad Pro";
+    me() {
+      return {
+        id: "122abc",
+        name: "Ranjith Satla",
+        email: "abc@gmail.com",
+        age: 25,
+      };
     },
-    price() {
-      return 40000.5;
-    },
-    releaseYear() {
-      return 2015;
-    },
-    rating() {
-      return null;
-    },
-    inStock() {
-      return false;
+    post() {
+      return {
+        id: "qwerty",
+        title: "Post Title",
+        body: "Body",
+        published: 2022,
+      };
     },
   },
 };
