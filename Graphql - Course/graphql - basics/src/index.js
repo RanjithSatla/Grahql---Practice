@@ -2,12 +2,15 @@ import { GraphQLServer } from "graphql-yoga";
 
 // type Definition (Schema) :
 
+// Scalar types : String, Int, Float, Boolean, ID
+
 const typeDefs = `
 type Query {
-    hello : String!
-    name : String!
-    location : String!
-    Bio : String!
+   title : String!
+   price : Float!
+   releaseYear : Int
+   rating : Float
+   inStock : Boolean!
 }
 `;
 
@@ -15,17 +18,20 @@ type Query {
 
 const resolvers = {
   Query: {
-    hello() {
-      return "This is my first query";
+    title() {
+      return "ipad Pro";
     },
-    name() {
-      return "Ranjith Satla";
+    price() {
+      return 40000.5;
     },
-    Bio() {
-      return "Iam a full stack developer";
+    releaseYear() {
+      return 2015;
     },
-    location() {
-      return "Hyderabad";
+    rating() {
+      return null;
+    },
+    inStock() {
+      return false;
     },
   },
 };
