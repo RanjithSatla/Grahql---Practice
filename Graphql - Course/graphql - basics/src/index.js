@@ -6,13 +6,51 @@ import { GraphQLServer } from "graphql-yoga";
 
 //Creating Custom types :
 
+const users = [
+  {
+    id: 1,
+    name: "Ranjith",
+    email: "ranjith@gmail.com",
+    age: 25,
+  },
+  {
+    id: 2,
+    name: "Vishnu",
+    email: "vishnu@gmail.com",
+    age: 24,
+  },
+  {
+    id: 3,
+    name: "Bhanu",
+    email: "bhanu@gmail.com",
+  },
+];
+
+const posts = [
+  {
+    id: 1,
+    title: "test1",
+    body: "Iam testing posts!",
+    published: 2022,
+  },
+  {
+    id: 2,
+    title: "test12",
+    body: "Iam testing posts12!",
+    published: 2020,
+  },
+  {
+    id: 3,
+    title: "dummy",
+    body: "Iam  posts!",
+  },
+];
+
 const typeDefs = `
 type Query {
-  greeting(name:String): String!
-  add(numbers:[Float!]) : Float!
-  grades : [Int!]!
+  user(query:String) : [User!]!
   me : User!
-  post : Post!
+  post(query:String) : [Post!]!
 }
 
 
@@ -27,7 +65,7 @@ type Post {
   id: ID!
   title : String!
   body : String! 
-  published : Int!
+  published : Int
 
 }
 
@@ -37,20 +75,15 @@ type Post {
 
 const resolvers = {
   Query: {
-    greeting(parent, args, ctx, info) {
-      if (args.name) return `Hello ${args.name}!`;
-      return "Hello";
-    },
-    add(parent, args, ctx, info) {
-      if (args.numbers.length === 0) {
-        return 0;
+    user(parent, args, ctx, info) {
+      if (!args.query) {
+        return users;
       }
-      return args.numbers.reduce((acc, curr) => {
-        return acc + curr;
+      return users.filter((user) => {
+        return user.name
+          .toLocaleLowerCase()
+          .includes(args.query.toLocaleLowerCase());
       });
-    },
-    grades(parent, args, ctx, info) {
-      return [43, 54, 98];
     },
     me() {
       return {
@@ -60,13 +93,19 @@ const resolvers = {
         age: 25,
       };
     },
-    post() {
-      return {
-        id: "qwerty",
-        title: "Post Title",
-        body: "Body",
-        published: 2022,
-      };
+    post(parent, args, ctx, info) {
+      if (!args.query) {
+        return posts;
+      }
+      return posts.filter((post) => {
+        const bodyFilter = post.body
+          .toLocaleLowerCase()
+          .includes(args.query.toLocaleLowerCase());
+        const titleFilter = post.title
+          .toLocaleLowerCase()
+          .includes(args.query.toLocaleLowerCase());
+        return bodyFilter || titleFilter;
+      });
     },
   },
 };
