@@ -8,19 +8,19 @@ import { GraphQLServer } from "graphql-yoga";
 
 const users = [
   {
-    id: 1,
+    id: "1",
     name: "Ranjith",
     email: "ranjith@gmail.com",
     age: 25,
   },
   {
-    id: 2,
+    id: "2",
     name: "Vishnu",
     email: "vishnu@gmail.com",
     age: 24,
   },
   {
-    id: 3,
+    id: "3",
     name: "Bhanu",
     email: "bhanu@gmail.com",
   },
@@ -28,21 +28,24 @@ const users = [
 
 const posts = [
   {
-    id: 1,
+    id: 10,
     title: "test1",
     body: "Iam testing posts!",
     published: 2022,
+    author: "1", // Setting relation to Users ID
   },
   {
-    id: 2,
+    id: 11,
     title: "test12",
     body: "Iam testing posts12!",
     published: 2020,
+    author: "2",
   },
   {
-    id: 3,
+    id: 12,
     title: "dummy",
     body: "Iam  posts!",
+    author: "1",
   },
 ];
 
@@ -66,7 +69,7 @@ type Post {
   title : String!
   body : String! 
   published : Int
-
+  author : User!
 }
 
 `;
@@ -105,6 +108,13 @@ const resolvers = {
           .toLocaleLowerCase()
           .includes(args.query.toLocaleLowerCase());
         return bodyFilter || titleFilter;
+      });
+    },
+  },
+  Post: {
+    author(parent, args, ctx, info) {
+      return users.find((user) => {
+        return user.id === parent.author;
       });
     },
   },
