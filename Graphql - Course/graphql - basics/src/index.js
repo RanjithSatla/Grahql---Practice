@@ -49,11 +49,30 @@ const posts = [
   },
 ];
 
+const comments = [
+  {
+    id: 20,
+    text: "Wonderful",
+    author: "1",
+  },
+  {
+    id: 21,
+    text: "Excellent",
+    author: "2",
+  },
+  {
+    id: 22,
+    text: "Marvellous",
+    author: "3",
+  },
+];
+
 const typeDefs = `
 type Query {
   user(query:String) : [User!]!
   me : User!
   post(query:String) : [Post!]!
+  comment : [Comment!]!
 }
 
 
@@ -63,6 +82,7 @@ type User {
   email : String!
   age : Int
   post: [Post]!
+  comments : [Comment!]!
 }
 
 type Post {
@@ -70,6 +90,12 @@ type Post {
   title : String!
   body : String! 
   published : Int
+  author : User!
+}
+
+type Comment {
+  id:ID!
+  text:String!
   author : User!
 }
 
@@ -111,6 +137,9 @@ const resolvers = {
         return bodyFilter || titleFilter;
       });
     },
+    comment(parent, args, ctx, info) {
+      return comments;
+    },
   },
   Post: {
     author(parent, args, ctx, info) {
@@ -123,6 +152,22 @@ const resolvers = {
     post(parent, args, ctx, info) {
       return posts.filter((post) => {
         return post.author === parent.id;
+      });
+    },
+  },
+  User: {
+    comments(parent, args, ctx, info) {
+      console.log("parent...", parent);
+
+      return comments.filter((comment) => {
+        return comment.author === parent.id;
+      });
+    },
+  },
+  Comment: {
+    author(parent, args, ctx, info) {
+      return users.find((user) => {
+        return user.id === parent.author;
       });
     },
   },
@@ -168,5 +213,32 @@ user{
 }
 }
 
+=> Users Query : With all the comments  of each User
+query {
+user{
+  id
+  name
+  age
+ 
+ comments{
+  text
+}
+}
+}
+
+
+=> Comments Query : With all the deatails  of each User
+
+query{
+  comment{
+    id
+    text
+    author{
+      id
+      name
+    }
+  
+  }
+}
   */
 }
