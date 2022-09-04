@@ -62,6 +62,7 @@ type User {
   name : String!
   email : String!
   age : Int
+  post: [Post]!
 }
 
 type Post {
@@ -118,6 +119,13 @@ const resolvers = {
       });
     },
   },
+  User: {
+    post(parent, args, ctx, info) {
+      return posts.filter((post) => {
+        return post.author === parent.id;
+      });
+    },
+  },
 };
 
 // Create Server :
@@ -128,3 +136,37 @@ const server = new GraphQLServer({
 });
 
 server.start(() => console.log("Server is Up"));
+
+{
+  /* 
+   => Posts Query : With the User details for each post
+
+  query{
+  post{
+    title
+    body  
+    id
+    author {
+      name
+      id
+    }
+  }
+}
+  
+
+  => Users Query : With all the post details of each User
+
+query {
+user{
+  id
+  name
+  age
+  post{
+    id
+    body
+  }  
+}
+}
+
+  */
+}
