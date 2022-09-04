@@ -28,21 +28,21 @@ const users = [
 
 const posts = [
   {
-    id: 10,
+    id: "10",
     title: "test1",
     body: "Iam testing posts!",
     published: 2022,
     author: "1", // Setting relation to Users ID
   },
   {
-    id: 11,
+    id: "11",
     title: "test12",
     body: "Iam testing posts12!",
     published: 2020,
     author: "2",
   },
   {
-    id: 12,
+    id: "12",
     title: "dummy",
     body: "Iam  posts!",
     author: "1",
@@ -51,19 +51,22 @@ const posts = [
 
 const comments = [
   {
-    id: 20,
+    id: "20",
     text: "Wonderful",
     author: "1",
+    post: "10",
   },
   {
-    id: 21,
+    id: "21",
     text: "Excellent",
     author: "2",
+    post: "11",
   },
   {
-    id: 22,
+    id: "22",
     text: "Marvellous",
     author: "3",
+    post: "12",
   },
 ];
 
@@ -91,12 +94,14 @@ type Post {
   body : String! 
   published : Int
   author : User!
+  comments:[Comment!]!
 }
 
 type Comment {
   id:ID!
   text:String!
   author : User!
+  post: Post!
 }
 
 `;
@@ -147,6 +152,11 @@ const resolvers = {
         return user.id === parent.author;
       });
     },
+    comments(parent, args, ctx, info) {
+      return comments.filter((comment) => {
+        return comment.post === parent.id;
+      });
+    },
   },
   User: {
     post(parent, args, ctx, info) {
@@ -154,8 +164,6 @@ const resolvers = {
         return post.author === parent.id;
       });
     },
-  },
-  User: {
     comments(parent, args, ctx, info) {
       console.log("parent...", parent);
 
@@ -168,6 +176,11 @@ const resolvers = {
     author(parent, args, ctx, info) {
       return users.find((user) => {
         return user.id === parent.author;
+      });
+    },
+    post(parent, args, ctx, info) {
+      return posts.find((post) => {
+        return post.id === parent.post;
       });
     },
   },
