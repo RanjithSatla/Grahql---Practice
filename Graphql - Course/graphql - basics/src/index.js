@@ -1,4 +1,6 @@
+import { astFromValue } from "graphql";
 import { GraphQLServer } from "graphql-yoga";
+import uuidv4 from "uuid/v4";
 
 // type Definition (Schema) :
 
@@ -88,6 +90,10 @@ type User {
   comments : [Comment!]!
 }
 
+type Mutation {
+  createUser(name:String!, email:String!, age:Int) : User!
+}
+
 type Post {
   id: ID!
   title : String!
@@ -146,6 +152,26 @@ const resolvers = {
       return comments;
     },
   },
+  Mutation: {
+    createUser(parent, args, ctx, info) {
+      const emailExists = users.some((user) => {
+        return user.email === args.email;
+      });
+      if (emailExists) {
+        return new Error("Email already exists");
+      }
+
+      const user = {
+        id: uuidv4(),
+        name: args.name,
+        email: args.email,
+        age: args.age,
+      };
+      users.push(user);
+
+      return user;
+    },
+  },
   Post: {
     author(parent, args, ctx, info) {
       return users.find((user) => {
@@ -165,8 +191,6 @@ const resolvers = {
       });
     },
     comments(parent, args, ctx, info) {
-      console.log("parent...", parent);
-
       return comments.filter((comment) => {
         return comment.author === parent.id;
       });
